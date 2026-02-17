@@ -6,40 +6,48 @@
 
 body {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    /* Fondo oscuro con degradado sutil */
+    background: radial-gradient(circle, #1a1a2e 0%, #0f0f1a 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    color: #e0e0e0;
 }
 
 #chat-container {
     width: 100%;
     max-width: 450px;
     height: 80vh;
-    background: white;
+    /* Fondo muy oscuro para el contenedor */
+    background: #16213e;
     border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 242, 0.2); /* Brillo turquesa suave */
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    border: 1px solid #0f3460;
 }
 
 #chat-header {
-    background: #0084ff;
-    color: white;
+    /* Degradado Turquesa a Azul Oscuro */
+    background: linear-gradient(90deg, #00fff2 0%, #0084ff 100%);
+    color: #000; /* Texto oscuro para resaltar sobre el turquesa */
     padding: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .status-dot {
     width: 10px;
     height: 10px;
-    background: #2ecc71;
+    background: #ccff00; /* Amarillo fosforito */
     border-radius: 50%;
-    box-shadow: 0 0 5px #2ecc71;
+    box-shadow: 0 0 8px #ccff00;
 }
 
 #messages {
@@ -49,7 +57,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    background: #f9f9f9;
+    /* Fondo oscuro para el área de mensajes */
+    background: #1a1a2e;
 }
 
 .message {
@@ -62,49 +71,62 @@ body {
 }
 
 .user {
-    background: #0084ff;
-    color: white;
+    /* Mensajes del usuario en Amarillo Fosforito */
+    background: #ccff00;
+    color: #000;
     align-self: flex-end;
     border-bottom-right-radius: 2px;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
 }
 
 .ai {
-    background: white;
-    color: #333;
+    /* Mensajes de la IA en Turquesa Fosforito */
+    background: #00fff2;
+    color: #000;
     align-self: flex-start;
     border-bottom-left-radius: 2px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0, 255, 242, 0.3);
 }
 
 .error {
-    color: #e74c3c;
-    background: #fdeaea;
+    color: #ff4b2b;
+    background: #2d1414;
+    border: 1px solid #ff4b2b;
 }
 
 #input-area {
     padding: 20px;
-    background: white;
+    background: #16213e;
     display: flex;
     gap: 10px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #0f3460;
 }
 
 input {
     flex: 1;
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    background: #0f3460;
+    border: 1px solid #00fff2;
     border-radius: 25px;
     outline: none;
-    transition: border 0.3s;
+    color: #fff;
+    transition: all 0.3s;
 }
 
 input:focus {
-    border-color: #0084ff;
+    border-color: #ccff00;
+    box-shadow: 0 0 10px rgba(204, 255, 0, 0.5);
+}
+
+input::placeholder {
+    color: #94a3b8;
 }
 
 button {
-    background: #0084ff;
-    color: white;
+    background: #00fff2;
+    color: #000;
     border: none;
     width: 45px;
     height: 45px;
@@ -113,15 +135,37 @@ button {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: transform 0.2s, background 0.3s;
+    transition: all 0.2s;
+    box-shadow: 0 0 10px rgba(0, 255, 242, 0.4);
 }
 
 button:hover {
-    background: #0073e6;
-    transform: scale(1.05);
+    background: #ccff00;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #ccff00;
 }
 
 button:disabled {
-    background: #ccc;
+    background: #444;
+    color: #888;
     cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+#messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+#messages::-webkit-scrollbar-track {
+    background: #1a1a2e;
+}
+
+#messages::-webkit-scrollbar-thumb {
+    background: #0f3460;
+    border-radius: 10px;
+}
+
+#messages::-webkit-scrollbar-thumb:hover {
+    background: #00fff2;
 }
