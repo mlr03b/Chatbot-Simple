@@ -216,5 +216,20 @@ code {
     margin-left: 20px;
     margin-bottom: 10px;
 }
+.ai pre code {
+    background: #1e1e1e !important; 
+    color: #d4d4d4 !important;   
+    display: block;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+.hljs-keyword, .hljs-selector-tag { color: #569cd6 !important; } 
+.hljs-string { color: #ce9178 !important; }                 
+.hljs-comment { color: #6a9955 !important; }             
+.hljs-number { color: #b5cea8 !important; }                    
+.hljs-title, .hljs-section { color: #dcdcaa !important; }   
+
 
 
