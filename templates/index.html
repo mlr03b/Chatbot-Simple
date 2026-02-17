@@ -3,63 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Chatbot IA</title>
+    <title>Chatbot IA Pro</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div id="chat-container">
         <div id="chat-header">
-            <h2>Asistente IA</h2>
-            <span class="status-dot"></span>
+            <div class="status-dot"></div>
+            <span>Asistente IA Pro</span>
         </div>
         
         <div id="messages">
-            <div class="message ai">¡Hola! ¿En qué puedo ayudarte hoy?</div>
+            </div>
+
+        <div id="typing-indicator" class="message ai" style="display: none; background: transparent; box-shadow: none; border: none; color: #00fff2;">
+            IA está pensando<span>.</span><span>.</span><span>.</span>
         </div>
-        
-        <div id="input-area">
-            <input type="text" id="user-input" placeholder="Escribe un mensaje..." autocomplete="off">
-            <button id="send-btn" onclick="sendMessage()">
-                <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-            </button>
-        </div>
+
+        <form id="chat-form" id="input-area">
+            <div style="display: flex; width: 100%; gap: 10px; padding: 20px; background: #16213e;">
+                <input type="text" id="user-input" placeholder="Escribe tu mensaje aquí..." required autocomplete="off">
+                <button type="submit" id="send-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
     </div>
 
     <script>
-        async function sendMessage() {
-            const input = document.getElementById('user-input');
-            const box = document.getElementById('messages');
-            const btn = document.getElementById('send-btn');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const messagesDiv = document.getElementById('messages');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const sendBtn = document.getElementById('send-btn');
+
+        function addMessage(content, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user' : 'ai');
             
-            if(!input.value.trim()) return;
+            if (isUser) {
+                messageDiv.textContent = content;
+            } else {
+                // Usamos marked.parse para que la respuesta de la IA tenga formato
+                messageDiv.innerHTML = marked.parse(content);
+            }
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
 
-            const userMsg = input.value;
-            box.innerHTML += `<div class="message user">${userMsg}</div>`;
-            input.value = '';
-            box.scrollTop = box.scrollHeight;
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            if (!message) return;
 
-            // Bloquear botón mientras responde
-            btn.disabled = true;
+            // Bloquear entrada y mostrar mensaje del usuario
+            addMessage(message, true);
+            userInput.value = '';
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+            
+            // Mostrar indicador de "IA pensando..."
+            typingIndicator.style.display = 'block';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
             try {
                 const response = await fetch('/chat', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message: userMsg})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
                 });
+
                 const data = await response.json();
-                box.innerHTML += `<div class="message ai">${data.response}</div>`;
+                
+                // Ocultar indicador y mostrar respuesta
+                typingIndicator.style.display = 'none';
+                
+                if (data.response) {
+                    addMessage(data.response, false);
+                } else {
+                    addMessage("Error: No se recibió respuesta.", false);
+                }
             } catch (error) {
-                box.innerHTML += `<div class="message ai error">Error al conectar con el servidor.</div>`;
+                typingIndicator.style.display = 'none';
+                addMessage("Error de conexión con el servidor.", false);
+            } finally {
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.focus();
             }
-
-            btn.disabled = false;
-            box.scrollTop = box.scrollHeight;
-        }
-
-        // Permitir enviar con la tecla Enter
-        document.getElementById('user-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') sendMessage();
         });
     </script>
 </body>
