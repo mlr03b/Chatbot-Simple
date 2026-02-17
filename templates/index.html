@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Chatbot IA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-header">
+            <h2>Asistente IA</h2>
+            <span class="status-dot"></span>
+        </div>
+        
+        <div id="messages">
+            <div class="message ai">¡Hola! ¿En qué puedo ayudarte hoy?</div>
+        </div>
+        
+        <div id="input-area">
+            <input type="text" id="user-input" placeholder="Escribe un mensaje..." autocomplete="off">
+            <button id="send-btn" onclick="sendMessage()">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const box = document.getElementById('messages');
+            const btn = document.getElementById('send-btn');
+            
+            if(!input.value.trim()) return;
+
+            const userMsg = input.value;
+            box.innerHTML += `<div class="message user">${userMsg}</div>`;
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            // Bloquear botón mientras responde
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: userMsg})
+                });
+                const data = await response.json();
+                box.innerHTML += `<div class="message ai">${data.response}</div>`;
+            } catch (error) {
+                box.innerHTML += `<div class="message ai error">Error al conectar con el servidor.</div>`;
+            }
+
+            btn.disabled = false;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // Permitir enviar con la tecla Enter
+        document.getElementById('user-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
